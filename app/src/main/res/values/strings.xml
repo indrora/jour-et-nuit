@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Jour et Nuit</string>
+
+    <string name="tab_walk_title">Steps</string>
+    <string name="tab_sleep_title">Sleep</string>
+    <string name="tab_history_title">History</string>
+
+    <string name="hello_world">Hello world!</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="label_calories">%1$d kcal</string>
+    <string name="label_dist_km">%1$d km</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_search_band">Select Band</string>
+</resources>

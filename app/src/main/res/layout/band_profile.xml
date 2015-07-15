@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:padding="16dp"
+    >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:drawableLeft="@drawable/ic_hint_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:id="@+id/input_name"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:nextFocusForward="@+id/input_mass"
+            android:hint="Name" />
+
+
+<RadioGroup android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:button="@drawable/radio_gender_female"
+            android:id="@+id/rb_female" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:button="@drawable/radio_gender_male"
+            android:id="@+id/rb_male" />
+</RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:drawableEnd="@drawable/ic_unit_kg"
+            android:drawableStart="@drawable/ic_hint_mass"
+            android:hint="Weight"
+            android:gravity="end"
+            android:id="@+id/input_mass"
+            android:singleLine="true"
+            android:imeOptions="actionNext|flagNavigateNext"
+            android:layout_weight="1"
+            android:nextFocusForward="@+id/input_height"
+            android:nextFocusDown="@+id/input_height"
+            />
+
+        <EditText
+            android:drawableStart="@drawable/ic_hint_height"
+            android:drawableEnd="@drawable/ic_unit_cm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Height"
+            android:id="@+id/input_height"
+            android:gravity="right"
+            android:singleLine="true"
+            android:layout_weight="1"
+            android:nextFocusForward="@+id/input_step_goal"/>
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_hint_steps"
+        android:hint="Step Goal"
+        android:imeOptions="actionDone"
+        android:id="@+id/input_step_goal"
+        android:numeric="integer" />
+
+</LinearLayout>

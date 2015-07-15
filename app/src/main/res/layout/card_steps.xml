@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:measureAllChildren="true">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="4dp">
+
+        <com.pnikosis.materialishprogress.ProgressWheel
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            app:matProg_progressIndeterminate="true"
+
+            android:id="@+id/stepsProgress" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/detailsTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="2.6km 350kcal" />
+
+            <TextView
+                android:id="@+id/stepsTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1234"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/cardview_dark_background"
+        android:gravity="right">
+
+        <TextView
+            android:id="@+id/batteryTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Small Text"
+            android:textColor="@color/abc_primary_text_material_dark"
+            android:gravity="center_vertical|right" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/ic_mili" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="20px"
+        android:layout_height="20px"
+        android:layout_gravity="center_horizontal|top" />
+
+</LinearLayout>

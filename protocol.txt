@@ -1,0 +1,165 @@
+********************************************************************************
+    Xiaomi Mi-band protocol documentation -- Data structures and stuff!
+********************************************************************************
+
+Basic data structures:
+
+* All integers are in Network Order (MSB first -- 0xDEADBEEF is stored as EF BE AD DE)
+* Integral values are unsigned unless otherwise noted.
+
+Basic structures:
+
+struct {
+	uint8_t year;
+	uint8_t month;
+	uint8_t day;
+	uint8_t hour;
+	uint8_t minute;
+	uint8_t second;
+} DATETIME
+
+struct {
+	uint8_t level;
+	uint16_t charges;
+	uint8_t status;
+	DATETIME lastCharged;
+} BATTERY_INFO
+
+struct {
+	uint16_t connIntMax;
+	uint16_t connIntMin;
+	uint16_t latency;
+	uint16_t timeout;
+	uint16_t connInt;
+	uint16_t advInt;
+} LE_PARAMS
+
+COLOR {
+	uint8_t RED;
+	uint8_t BLUE;
+	uint8_t GREEN;
+}
+
+struct {
+	uint32_t uid;
+	uint8_t gender;
+	uint8_t age;
+	uint8_t height; // in cm
+	uint8_t mass;   // in kg
+	uint8_t type;   // unknown usage?
+	uchar   name[10]; // 10 bytes for name, UTF8. No assumed final 0x00;
+	uint8_t crc8;   // CRC8 of data. 
+} USERDATA
+
+CRC8 is weird -- Xor'd against some byte in the MAC address?
+
+
+Characteristics on the device
+---
+
+Service 1 (0xFEE0) "Mili-Service"
+0xFF01  read                   DEVICE_INFO
+0xFF02  read write             DEVICE_NAME
+0xFF03  read            notify NOTIFICATION
+0xFF04  read write             USER_INFO
+0xFF05       write             CONTROL_POINT
+0xFF06  read            notify REALTIME_STEPS
+0xFF07  read          indicate ACTIVITY_DATA
+0xFF08       write(NR)         FIRMWARE_DATA
+0xFF09  read write             LE_PARAMS
+0xFF0A  read write             DATE_TIME
+0xFF0B  read write             STATISTICS
+0xFF0C  read            notify BATTERY
+0xFF0D  read write             TEST
+0xFF0E  read            notify SENSOR_DATA
+0xFF0F  read write             PAIR
+
+
+CONTROL_POINT commands:
+
+ cmd | operands | description
+  03 |        1 | Set realtime step notification (uint8_t enable)
+  04 |       CC | Set *alarm clock* data
+  05 |        2 | Set goal (byte, uint16)
+  06 |        0 | Get activity information -> starts sync??
+  07 |        ? | Send firmware information
+  08 |        1 | Send notification (byte argument)
+  09 |        0 | Factory reset (!! REMOVES PAIRING INFORMATION !!)
+  10 |        ? | Confirm activity data transfer complete
+  11 |        0 | Sync: used in Firmware push
+  12 |        0 | Reboot (removes pairing data? )
+  13  **********  unused?
+  14 |        4 | Set color scheme [ COLOR and a byte: flash color? ]
+  15 |        1 | Set Wear location
+  16 |        1 | Set step count -> uint16
+  17 |        ? | Stop sync data (reset sync location?)
+  18 |       1? | get sensor data
+  19 |        0 | Stop motor vibrate
+  
+  * used in multiple places
+
+
+Pairing: To pair with the device, first make sure it is discoverable; this is done while it is in sleep mode, has been unpaired, has been factory reset, or is charging.
+
+Write to the PAIRING characteristic the value 0x02. Poll regularly for a value on the band at that endpoint. When it becomes 0x02 as well, you have paired with the device. If it becomes 0xFF, you have failed to pair properly. Try again.
+
+Immediately after pairing, you should write to the device two TIME structures, the second of which is !0x7F (128?) as all values.
+
+Write user information to the device; this is done by writing a USERATA structure to the User Info characteristic. This value (UID, etc) is used as an authentication to the device for later data transfers.
+
+Step tracking information is provided through the REALTIME_STEPS characteristic. To enable notifications, first do the standard BTLEGATT thing of writing notify/indicate to the characteristic control descriptor, then write the REALTIME_STEPS command to the contorl point with the arguemnt 1 or 0. 
+
+Step notification
+-----------------
+
+To get step counts, read the REALTIME_STEPS characteristic.
+To get step updates, set up notifications on the REALTIME_STEPS characteristic (you should do this on conenction!) and write opcode 3 (enable step notifications) with operand 1 (to enable) or 0 (to disable)
+
+Timer (alarm) functionality
+---------------------------
+
+Timer command structure looks like this:
+
+struct TIMER_COMMAND {
+    byte command = 4; // fixed
+    byte index; // 0, 1, 2
+    byte enabled; // boolean (0 = disabled, 1 = enabled)
+    byte year;    // Year    \
+    byte month;   // Month   |  Used in a special case where days = 0;
+    byte day;     // Day     /
+    byte hour;
+    byte minute;
+    byte second;
+    byte wakeDuration;  // If we're in light sleep when the alarm would go off, buzz!
+    byte days; // monday = 1, sunday = 64 -- you do the math.
+}
+
+Setting user information
+------------------------
+
+The User Info characeristic is used to set user info and authenticate to the device.
+
+Sending firmware
+----------------
+
+Firmware is tricky. 
+
+Since we can only write 20 bytes at a time to the firmware block, we send 20 bytes at a time.
+
+First, firmware information is sent. 
+Then, the firmware data is sent. 
+Then, the device is rebooted (!!)
+Then, we have updated.
+
+There's CRC8's in there too, but I can't entirely tell what's going on.
+
+Vibrating the motor
+-------------------
+
+!! This takes battery to do! !!
+
+Send the notification 0 for "short" vibrates
+Send the notification 1 for "long" vibrates (theoretically)
+
+You should keep at hand the "kill" vibrate command.
+
