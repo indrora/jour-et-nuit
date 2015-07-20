@@ -1,0 +1,16 @@
+Jour Et Nuit: Day 'n' Nite.
+
+This software aims to be a functional replacement for the Xiaomi software for talking to the Xiaomi Mi Band called "Mi Fit"
+
+The goals of this software are to:
+
+* Provide a functional stand-in for the software without the need to create an account with Xiaomi
+* Offer more granular information density than is offered by the Xiaomi software
+* Export data (instead of holding it hostage)
+
+How I've done this
+------------------
+
+This software is the result of reading over a lot of HCI snoop logs and reverse engineering of the obfuscated application.
+
+The document "protocol.txt" is my knowledge of the protocol as it stands from multiple sources across the internet.
